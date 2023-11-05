@@ -9,20 +9,18 @@ def solved(username):
     }
     query = {
         "query": """
-        query countSolved($username: String!) {
-            matchedUser(username: $username) {
+        query { 
+            matchedUser(username: "%s") {
                 submitStatsGlobal {
                     acSubmissionNum {
                         difficulty
                         count
+                        submissions
                     }
                 }
             }
         }
-        """,
-        "variables": {
-            "username": username
-        }
+        """ % username,
     }
     try:
         response = requests.post(api, json=query, headers=headers)
@@ -32,7 +30,8 @@ def solved(username):
             ['submitStatsGlobal']
             ['acSubmissionNum'][0]['count']
         )
-    except Exception:
+    except Exception as e:
         return None
+
 if __name__ == '__main__':
     print(solved(sys.argv[1]))
